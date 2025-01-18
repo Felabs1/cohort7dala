@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { web3 } from "./utils/config";
 import { connectWallet } from "./utils/config";
+import { contract } from "./utils/config";
 
 function App() {
   const [accounts, setAccounts] = useState(null);
+
+  const viewMessage = async () => {
+    const data = await contract.methods.getGreeting().call();
+    console.log(data);
+  };
 
   useEffect(() => {
     checkConnection();
@@ -28,7 +34,7 @@ function App() {
       )}
 
       <input type="text" />
-      <button>view greeting</button>
+      <button onClick={viewMessage}>view greeting</button>
       <button>SetGreeting</button>
 
       <p>Greeting</p>
