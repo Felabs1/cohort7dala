@@ -15,20 +15,29 @@ function App() {
     checkConnection();
   }, []);
 
-  const checkConnection = () => {
-    let accounts = web3.eth.getAccounts();
-    if (accounts) {
-      // do something
-
-      setAccounts(accounts);
+  const checkConnection = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+          setAccounts(accounts[0]);
+          return accounts[0];
+        } else {
+          console.log("no accounts were found");
+          return null;
+        }
+      } catch (e) {
+        console.error("error connecting to wallet " + e);
+        return null;
+      }
     } else {
-      // do something
+      console.log("you need to install your metamask");
     }
   };
   return (
     <div>
       {accounts ? (
-        <p>connected</p>
+        <p>{accounts}</p>
       ) : (
         <button onClick={connectWallet}>connect wallet</button>
       )}
