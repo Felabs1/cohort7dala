@@ -5,10 +5,22 @@ import { contract } from "./utils/config";
 
 function App() {
   const [accounts, setAccounts] = useState(null);
+  const [inputText, setInputText] = useState("");
 
   const viewMessage = async () => {
     const data = await contract.methods.getGreeting().call();
     console.log(data);
+  };
+
+  const setData = async () => {
+    const gas = await contract.methods
+      .setGreeting(inputText)
+      .estimateGas({ from: accounts });
+
+    const tx = await contract.methods
+      .setGreeting(inputText)
+      .send({ from: accounts, gas });
+    console.log(tx);
   };
 
   useEffect(() => {
@@ -42,9 +54,15 @@ function App() {
         <button onClick={connectWallet}>connect wallet</button>
       )}
 
-      <input type="text" />
+      <input
+        type="text"
+        onChange={(e) => {
+          console.log(e.target.value);
+          setInputText(e.target.value);
+        }}
+      />
       <button onClick={viewMessage}>view greeting</button>
-      <button>SetGreeting</button>
+      <button onClick={setData}>SetGreeting</button>
 
       <p>Greeting</p>
     </div>
